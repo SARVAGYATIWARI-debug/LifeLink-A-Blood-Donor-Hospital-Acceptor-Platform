@@ -28,8 +28,26 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
+  const login = async (role, data) => {
+    try {
+      const res = await axios.post(`/api/auth/${role}/login`, data);
+      setUser(res.data.data);
+      return true;
+    } catch (error) {
+      console.error('Login failed:', error.response?.data?.message || error.message);
+      return false;
+    }
+  };
+
+  const register = async (role, data) => {
+    try {
+      const res = await axios.post(`/api/auth/${role}/register`, data);
+      setUser(res.data.data);
+      return true;
+    } catch (error) {
+      console.error('Registration failed:', error.response?.data?.message || error.message);
+      return false;
+    }
   };
 
   const logout = async () => {
@@ -43,7 +61,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, fetchUser, setUser }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, register, fetchUser, setUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );
