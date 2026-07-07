@@ -209,6 +209,8 @@ export const loginHospital = async (req, res, next) => {
 export const logoutUser = (req, res) => {
   res.cookie('jwt', '', {
     httpOnly: true,
+    secure: process.env.NODE_ENV !== 'development',
+    sameSite: process.env.NODE_ENV !== 'development' ? 'none' : 'strict',
     expires: new Date(0),
   });
   res.status(200).json({ success: true, message: 'Logged out successfully' });
